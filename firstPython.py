@@ -23,16 +23,43 @@ class Player(turtle.Turtle):
         self.speed(0)
 
     def go_up(self):
-        self.goto(self.xcor(), self.ycor() + 24)
+
+        move_to_x = player.xcor()
+        move_to_y = player.ycor() + 24
+        #self.goto(self.xcor(), self.ycor() + 24)
+
+        #check wall has space ?
+        if(move_to_x, move_to_y) not in walls:
+            self.goto(move_to_x, move_to_y)
 
     def go_down(self):
-        self.goto(self.xcor(), self.ycor() - 24) 
+
+        move_to_x = player.xcor()
+        move_to_y = player.ycor() - 24
+        #self.goto(self.xcor(), self.ycor() - 24) 
+
+        #check wall has space ?
+        if(move_to_x, move_to_y) not in walls:
+            self.goto(move_to_x, move_to_y)
 
     def go_left(self):
-        self.goto(self.xcor() - 24, self.ycor())   
+        move_to_x = player.xcor() - 24
+        move_to_y = player.ycor() 
+        #self.goto(self.xcor() - 24, self.ycor())   
+
+        #check wall has space ?
+        if(move_to_x, move_to_y) not in walls:
+            self.goto(move_to_x, move_to_y)
 
     def go_right(self):
-        self.goto(self.xcor() + 24, self.ycor())        
+        move_to_x = player.xcor() + 24
+        move_to_y = player.ycor() 
+        #self.goto(self.xcor() + 24, self.ycor())        
+
+
+        #check wall has space ?
+        if(move_to_x, move_to_y) not in walls:
+            self.goto(move_to_x, move_to_y)
 
 
 #create levels list
@@ -85,6 +112,7 @@ def setup_game(level):
             if character == "X":
                 pen.goto(screen_x, screen_y)
                 pen.stamp()
+                walls.append((screen_x, screen_y))
 
             #check if it is a P (representing the player)    
             if character == "P":
@@ -99,8 +127,14 @@ def setup_game(level):
 pen = Pen()
 player = Player()
 
+#create walll coordinate
+walls = []
+
 #set up the level
 setup_game(levels[1])
+print (walls)
+
+
 
 #keyboard bindings
 turtle.listen()
