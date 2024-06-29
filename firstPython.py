@@ -5,7 +5,7 @@ ws.bgcolor("black")
 ws.title("The Hidden Treasure")
 ws.setup(700, 700)
 
-#create pointer
+#create Pen
 class Pen(turtle.Turtle):
     def __init__(self):
         super().__init__()
@@ -14,13 +14,34 @@ class Pen(turtle.Turtle):
         self.penup()
         self.speed(0)
 
+class Player(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")     
+        self.color("blue")  
+        self.penup()
+        self.speed(0)
+
+    def go_up(self):
+        self.goto(self.xcor(), self.ycor() + 24)
+
+    def go_down(self):
+        self.goto(self.xcor(), self.ycor() - 24) 
+
+    def go_left(self):
+        self.goto(self.xcor() - 24, self.ycor())   
+
+    def go_right(self):
+        self.goto(self.xcor() + 24, self.ycor())        
+
+
 #create levels list
 levels = [""]
 
 #define first level
 level_1 = [
     "XXXXXXXXXXXXXXXXXXXXXXXXX",
-    "X  XXXXXXX          XXXXX",
+    "XP  XXXXXXX         XXXXX",
     "X  XXXXXXX  XXXXXX  XXXXX",
     "X       XX  XXXXXX  XXXXX",
     "X       XX  XXX        XX",
@@ -64,6 +85,10 @@ def setup_game(level):
             if character == "X":
                 pen.goto(screen_x, screen_y)
                 pen.stamp()
+
+            #check if it is a P (representing the player)    
+            if character == "P":
+                player.goto(screen_x, screen_y) 
                 
                 #check if it is an Y (representing the player)
             # if character == "Y":
@@ -72,9 +97,20 @@ def setup_game(level):
 
 #create class instances
 pen = Pen()
+player = Player()
 
 #set up the level
 setup_game(levels[1])
+
+#keyboard bindings
+turtle.listen()
+turtle.onkey(player.go_left, "Left")
+turtle.onkey(player.go_right, "Right")
+turtle.onkey(player.go_up, "Up")
+turtle.onkey(player.go_down, "Down")
+
+#Turn Off screen updates
+ws.tracer(0)
 
 #main game loop
 while True:
