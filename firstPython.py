@@ -9,9 +9,9 @@ MARGIN = 50
 # Define level
 level_1 = [
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "XP XXXXXXX                    XXXXX",
-    "X  XXXXXXX  XXXXXX   XXXX     XXXXX",
-    "X       XX  XXXXXX   XXXX     XXXXX",
+    "XP XXXXXXE  A                 XXXXX",
+    "X  XXXXXXX  XXXXXX   XXXX     EXXXX",
+    "X       XX  XXXXXX   XXXX     EXXXX",
     "X       XX  XXX        XX  XXXXXXXX",
     "XXXXXX  XX  XXX                  XX",
     "XXXXXX  XX  XXXXXX  XXXXX   XXX  XX",
@@ -24,12 +24,12 @@ level_1 = [
     "XXXXXX  XXXXXX   XXXXX            X",
     "XXXE X  XXXXXXX         X    XX XXX",
     "XXX         A           X         X",
-    "XXX        XXXXXXXX   XXXX    XXXXX",
+    "XXE        XXXXXXXX   XXXX    XXXXX",
     "XXXXXXXXX  XXXXXXXXXXXXXX   XXXXXXX",
     "XXXXXXXXX               XX  XXE   X",
     "XX  XXXXX               X   XX    X",
     "XX  XXXXXXXXXXXX  XXX       XX    X",
-    "XX A  XXXXXXXXXX  XXXXX          XX",
+    "XX A  XXXXXXXXXX  XXXEX          XX",
     "XX         XXXX       XXX    XX   X",
     "XXXX                   EXX      XXX",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -222,8 +222,34 @@ turtle.onkey(player.go_right, "Right")
 turtle.onkey(player.go_up, "Up")
 turtle.onkey(player.go_down, "Down")
 
+# Score display
+score_display = turtle.Turtle()
+score_display.speed(0)
+score_display.color("white")
+score_display.penup()
+score_display.hideturtle()
+score_display.goto(-screen_width // 2 + 20, screen_height // 2 - 40)
+score_display.write("Gold: {}".format(player.gold), align="left", font=("Courier", 24, "normal"))
+
+# Message display
+message_display = turtle.Turtle()
+message_display.speed(0)
+message_display.color("white")
+message_display.penup()
+message_display.hideturtle()
+message_display.goto(screen_width // 2 - 20, screen_height // 2 - 40)
+
 # Turn on screen updates
 ws.tracer(1)
+
+# Update functions
+def update_score_display():
+    score_display.clear()
+    score_display.write("Gold: {}".format(player.gold), align="left", font=("Courier", 24, "normal"))
+
+def update_message_display(message):
+    message_display.clear()
+    message_display.write(message, align="right", font=("Courier", 24, "normal"))
 
 for enemy in enemies:
     turtle.ontimer(enemy.move, t=250)
@@ -235,19 +261,17 @@ while game_running:
     for egg in eggs:
         if player.is_collision(egg):
             player.gold += egg.gold
-            print("Player Gold: {}".format(player.gold))
+            update_score_display()
             egg.destroy()
             eggs.remove(egg)
 
     if not eggs:
-        print("You won!")
+        update_message_display("You won!")
         game_running = False
 
     for enemy in enemies:
         if player.is_collision(enemy):
-            print("Player Died!")
-            print("You Lose! Try Again")
-
+            update_message_display("Player Died! You Lose! Try Again")
             game_running = False
             break
 
