@@ -229,7 +229,7 @@ score_display.color("white")
 score_display.penup()
 score_display.hideturtle()
 score_display.goto(-screen_width // 2 + 20, screen_height // 2 - 40)
-score_display.write("Gold: {}".format(player.gold), align="left", font=("Courier", 24, "normal"))
+score_display.write("Score: {}".format(player.gold), align="left", font=("Courier", 24, "normal"))
 
 # Message display
 message_display = turtle.Turtle()
