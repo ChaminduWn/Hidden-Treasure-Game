@@ -2,17 +2,56 @@ import turtle
 import math
 import random
 
+# Define block size and margin
+BLOCK_SIZE = 24
+MARGIN = 50
+
+# Define level
+level_1 = [
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "XP XXXXXXX                    XXXXX",
+    "X  XXXXXXX  XXXXXX   XXXX     XXXXX",
+    "X       XX  XXXXXX   XXXX     XXXXX",
+    "X       XX  XXX        XX  XXXXXXXX",
+    "XXXXXX  XX  XXX                  XX",
+    "XXXXXX  XX  XXXXXX  XXXXX   XXX  XX",
+    "XXXXXX  XX    XXXX  XXXXX   XX    X",
+    "X  XXX A      XXXXE XXX          XX",
+    "X  XXX  XXXXXXXX          XXXXXXXXX",
+    "X         XXXXX  XXXXX          XXX",
+    "XE               XXXXX    XX    XXX",
+    "XXXXXX  XXXXX    XXXXX    X   XXXXX",
+    "XXXXXX  XXXXXX   XXXXX            X",
+    "XXXE X  XXXXXXX         X    XX XXX",
+    "XXX         A           X         X",
+    "XXX        XXXXXXXX   XXXX    XXXXX",
+    "XXXXXXXXX  XXXXXXXXXXXXXX   XXXXXXX",
+    "XXXXXXXXX               XX  XXE   X",
+    "XX  XXXXX               X   XX    X",
+    "XX  XXXXXXXXXXXX  XXX       XX    X",
+    "XX A  XXXXXXXXXX  XXXXX          XX",
+    "XX         XXXX       XXX    XX   X",
+    "XXXX                   EXX      XXX",
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+]
+
+# Calculate screen dimensions with margin
+level_width = len(level_1[0])
+level_height = len(level_1)
+
+screen_width = level_width * BLOCK_SIZE + MARGIN
+screen_height = level_height * BLOCK_SIZE + MARGIN
+
+# Offset to shift the game layout
+OFFSET_X = 50
+OFFSET_Y = 50
+
+# Set up screen
 ws = turtle.Screen()
 ws.bgcolor("black")
 ws.title("The Hidden Treasure")
-ws.setup(700, 700)
+ws.setup(screen_width, screen_height)
 ws.tracer(0)  # Turn off screen updates initially
-
-# Register Shapes
-# turtle.register_shape("wizard_right.gif")
-# turtle.register_shape("wizard_left.gif")
-# turtle.register_shape("egg.gif")
-# turtle.register_shape("wall.gif")
 
 # Create Pen
 class Block(turtle.Turtle):
@@ -26,34 +65,34 @@ class Block(turtle.Turtle):
 class Player(turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
-        self.shape("turtle")     
-        self.color("green")  
+        self.shape("turtle")
+        self.color("green")
         self.penup()
         self.speed(0)
         self.gold = 0
 
     def go_up(self):
         move_to_x = self.xcor()
-        move_to_y = self.ycor() + 24
-        if (move_to_x, move_to_y) not in walls:
+        move_to_y = self.ycor() + BLOCK_SIZE
+        if (move_to_x, move_to_y) not in fence:
             self.goto(move_to_x, move_to_y)
 
     def go_down(self):
         move_to_x = self.xcor()
-        move_to_y = self.ycor() - 24
-        if (move_to_x, move_to_y) not in walls:
+        move_to_y = self.ycor() - BLOCK_SIZE
+        if (move_to_x, move_to_y) not in fence:
             self.goto(move_to_x, move_to_y)
 
     def go_left(self):
-        move_to_x = self.xcor() - 24
+        move_to_x = self.xcor() - BLOCK_SIZE
         move_to_y = self.ycor()
-        if (move_to_x, move_to_y) not in walls:
+        if (move_to_x, move_to_y) not in fence:
             self.goto(move_to_x, move_to_y)
 
     def go_right(self):
-        move_to_x = self.xcor() + 24
+        move_to_x = self.xcor() + BLOCK_SIZE
         move_to_y = self.ycor()
-        if (move_to_x, move_to_y) not in walls:
+        if (move_to_x, move_to_y) not in fence:
             self.goto(move_to_x, move_to_y)
 
     def is_collision(self, other):
@@ -89,15 +128,15 @@ class Enemy(turtle.Turtle):
         if game_running:
             if self.direction == "up":
                 dx = 0
-                dy = 24
+                dy = BLOCK_SIZE
             elif self.direction == "down":
                 dx = 0
-                dy = -24
+                dy = -BLOCK_SIZE
             elif self.direction == "left":
-                dx = -24
+                dx = -BLOCK_SIZE
                 dy = 0
             elif self.direction == "right":
-                dx = 24
+                dx = BLOCK_SIZE
                 dy = 0
             else:
                 dx = 0
@@ -116,7 +155,7 @@ class Enemy(turtle.Turtle):
             move_to_x = self.xcor() + dx
             move_to_y = self.ycor() + dy
 
-            if (move_to_x, move_to_y) not in walls:
+            if (move_to_x, move_to_y) not in fence:
                 self.goto(move_to_x, move_to_y)
             else:
                 self.direction = random.choice(["up", "down", "left", "right"])
@@ -125,43 +164,14 @@ class Enemy(turtle.Turtle):
 
     def is_close(self, other):
         distance = math.sqrt((self.xcor() - other.xcor()) ** 2 + (self.ycor() - other.ycor()) ** 2)
-        return distance < 75
+        return distance < 80
 
     def destroy(self):
-        self.goto(2000, 2000)
+        self.goto(1999, 1999)
         self.hideturtle()
 
 # Create levels list
 levels = [""]
-
-# Define first level
-level_1 = [
-    "XXXXXXXXXXXXXXXXXXXXXXXXX",
-    "XP XXXXXXX         XXXXX",
-    "X  XXXXXXX  XXXXXX  XXXXX",
-    "X       XX  XXXXXX  XXXXX",
-    "X       XX  XXX        XX",
-    "XXXXXX  XX  XXX        XX",
-    "XXXXXX  XX  XXXXXX  XXXXX",
-    "XXXXXX  XX    XXXX  XXXXX",
-    "X  XXX A      XXXXE XXXXX",
-    "X  XXX  XXXXXXXXXXXXXXXXX",
-    "X         XXXXXXXXXXXXXXX",
-    "XE               XXXXXXXX",
-    "XXXXXXXXXXXX     XXXXX  X",
-    "XXXXXXXXXXXXXXX  XXXXX  X",
-    "XXX  XXXXXXXXXX         X",
-    "XXX         A           X",
-    "XXX        XXXXXXXXXXXXXX",
-    "XXXXXXXXX  XXXXXXXXXXXXXX",
-    "XXXXXXXXX               X",
-    "XX  XXXXX               X",
-    "XX  XXXXXXXXXXXX  XXXXXXX",
-    "XX A  XXXXXXXXXX  XXXXXXX",
-    "XX         XXXX         X",
-    "XXXX                   EX",
-    "XXXXXXXXXXXXXXXXXXXXXXXXX",
-]
 
 # Add a treasure list
 eggs = []
@@ -177,14 +187,13 @@ def setup_game(level):
             # Get the character at each x,y coordinate
             character = level[y][x]
             # Calculate the screen x,y coordinates
-            screen_x = -288 + (x * 24)
-            screen_y = 288 - (y * 24)
+            screen_x = -screen_width // 2 + (x * BLOCK_SIZE) + OFFSET_X
+            screen_y = screen_height // 2 - (y * BLOCK_SIZE) - OFFSET_Y
 
             if character == "X":
                 block.goto(screen_x, screen_y)
-                # pen.shape("wall.gif")
                 block.stamp()
-                walls.append((screen_x, screen_y))
+                fence.append((screen_x, screen_y))
 
             if character == "P":
                 player.goto(screen_x, screen_y)
@@ -200,11 +209,11 @@ block = Block()
 player = Player()
 
 # Create wall coordinate
-walls = []
+fence = []
 
 # Set up the level
 setup_game(levels[1])
-print(walls)
+print(fence)
 
 # Keyboard bindings
 turtle.listen()
@@ -237,6 +246,8 @@ while game_running:
     for enemy in enemies:
         if player.is_collision(enemy):
             print("Player Died!")
+            print("You Lose! Try Again")
+
             game_running = False
             break
 
