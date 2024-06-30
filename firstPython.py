@@ -86,41 +86,42 @@ class Enemy(turtle.Turtle):
         self.direction = random.choice(["up", "down", "left", "right"])
 
     def move(self):
-        if self.direction == "up":
-            dx = 0
-            dy = 24
-        elif self.direction == "down":
-            dx = 0
-            dy = -24
-        elif self.direction == "left":
-            dx = -24
-            dy = 0
-        elif self.direction == "right":
-            dx = 24
-            dy = 0
-        else:
-            dx = 0
-            dy = 0
+        if game_running:
+            if self.direction == "up":
+                dx = 0
+                dy = 24
+            elif self.direction == "down":
+                dx = 0
+                dy = -24
+            elif self.direction == "left":
+                dx = -24
+                dy = 0
+            elif self.direction == "right":
+                dx = 24
+                dy = 0
+            else:
+                dx = 0
+                dy = 0
 
-        if self.is_close(player):
-            if player.xcor() < self.xcor():
-                self.direction = "left"
-            elif player.xcor() > self.xcor():
-                self.direction = "right"
-            elif player.ycor() < self.ycor():
-                self.direction = "down"
-            elif player.ycor() > self.ycor():
-                self.direction = "up"
+            if self.is_close(player):
+                if player.xcor() < self.xcor():
+                    self.direction = "left"
+                elif player.xcor() > self.xcor():
+                    self.direction = "right"
+                elif player.ycor() < self.ycor():
+                    self.direction = "down"
+                elif player.ycor() > self.ycor():
+                    self.direction = "up"
 
-        move_to_x = self.xcor() + dx
-        move_to_y = self.ycor() + dy
+            move_to_x = self.xcor() + dx
+            move_to_y = self.ycor() + dy
 
-        if (move_to_x, move_to_y) not in walls:
-            self.goto(move_to_x, move_to_y)
-        else:
-            self.direction = random.choice(["up", "down", "left", "right"])
+            if (move_to_x, move_to_y) not in walls:
+                self.goto(move_to_x, move_to_y)
+            else:
+                self.direction = random.choice(["up", "down", "left", "right"])
 
-        turtle.ontimer(self.move, t=random.randint(100, 300))
+            turtle.ontimer(self.move, t=random.randint(100, 300))
 
     def is_close(self, other):
         distance = math.sqrt((self.xcor() - other.xcor()) ** 2 + (self.ycor() - other.ycor()) ** 2)
@@ -229,6 +230,10 @@ while game_running:
             egg.destroy()
             eggs.remove(egg)
 
+    if not eggs:
+        print("You won!")
+        game_running = False
+
     for enemy in enemies:
         if player.is_collision(enemy):
             print("Player Died!")
@@ -236,3 +241,5 @@ while game_running:
             break
 
     ws.update()
+
+ws.mainloop()
