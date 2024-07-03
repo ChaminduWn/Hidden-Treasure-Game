@@ -245,7 +245,7 @@ ws.tracer(1)
 # Update functions
 def update_score_display():
     score_display.clear()
-    score_display.write("Gold: {}".format(player.gold), align="left", font=("Courier", 24, "normal"))
+    score_display.write("Score: {}".format(player.gold), align="left", font=("Courier", 24, "normal"))
 
 def update_message_display(message):
     message_display.clear()
